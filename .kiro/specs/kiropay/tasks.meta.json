@@ -1,0 +1,104 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Scaffold Next.js 15 (App Router) + TypeScript strict + Tailwind CSS": [
+      {
+        "executionId": "2a6cd1c1-3cab-4749-834e-71047d454531",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795193351547
+      },
+      {
+        "executionId": "2a6cd1c1-3cab-4749-834e-71047d454531",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795193691092
+      }
+    ],
+    "2. Install wagmi 2, viem 2, @tanstack/react-query; configure the": [
+      {
+        "executionId": "2a6cd1c1-3cab-4749-834e-71047d454531",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795193723070
+      },
+      {
+        "executionId": "2a6cd1c1-3cab-4749-834e-71047d454531",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795194231888
+      }
+    ],
+    "3. Create `src/lib/chain.ts` with Base Sepolia config (chain ID 84532,": [
+      {
+        "executionId": "2a6cd1c1-3cab-4749-834e-71047d454531",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795194260040
+      },
+      {
+        "executionId": "2a6cd1c1-3cab-4749-834e-71047d454531",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795194374211
+      }
+    ],
+    "4. Create `src/lib/money.ts`: `parseUsdc` / `formatUsdc` using bigint": [
+      {
+        "executionId": "eed399c8-e86d-4aac-8498-625523aaafa0",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795194751037
+      },
+      {
+        "executionId": "eed399c8-e86d-4aac-8498-625523aaafa0",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795194900320
+      },
+      {
+        "executionId": "eed399c8-e86d-4aac-8498-625523aaafa0",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795194912636
+      },
+      {
+        "executionId": "eed399c8-e86d-4aac-8498-625523aaafa0",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795195563349
+      }
+    ],
+    "5. Create `src/lib/invoice.ts`: `Invoice` type, `encodeInvoiceLink`": [
+      {
+        "executionId": "eed399c8-e86d-4aac-8498-625523aaafa0",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795195618045
+      },
+      {
+        "executionId": "6e5f2c62-d439-41f5-a5c7-db6498804fd7",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795196123061
+      },
+      {
+        "executionId": "6e5f2c62-d439-41f5-a5c7-db6498804fd7",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795196127025
+      },
+      {
+        "executionId": "148bd53a-0bd0-472b-86a3-ada157346122",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795200840583
+      }
+    ],
+    "6. Create `src/lib/store.ts`: localStorage CRUD for seller invoices": [
+      {
+        "executionId": "148bd53a-0bd0-472b-86a3-ada157346122",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795200909000
+      },
+      {
+        "executionId": "148bd53a-0bd0-472b-86a3-ada157346122",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795201047725
+      }
+    ],
+    "7. Create `src/lib/verify.ts`: `findPaymentTransfer(receipt, invoice)`": [
+      {
+        "executionId": "148bd53a-0bd0-472b-86a3-ada157346122",
+        "chatSessionId": "sess_a1c87396-ee7a-4379-b92c-e1af587b6505",
+        "timestamp": 1795201163499
+      }
+    ]
+  }
+}
