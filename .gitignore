@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+
+# env files (never commit keys)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript build info (stale copies break type-check)
+tsconfig.tsbuildinfo
+
+# testing
+coverage/
+
+# logs
+*.log
+
+# os
+.DS_Store
+
+# NOTE: .kiro/ MUST stay tracked — Kiroween requires it at the repo root.
+# Do NOT add .kiro to this file.
+
+# next-env types (auto-generated)
+next-env.d.ts
