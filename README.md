@@ -61,7 +61,7 @@ This project was built spec-first with Kiro:
 - [ ] Working app URL (deployed, testnet only)
 - [ ] Demo video < 3 minutes, public on YouTube
 - [ ] Write-up on how Kiro was used
-- [ ] Submit on Devpost before Fri 5 Dec 2026, 14:00 PT (05:00 WIB, 6 Dec)
+- [ ] Submit on Devpost before Fri 4 Dec 2026, 14:00 PT (Sat 5 Dec 2026, 05:00 WIB)
 
 ## License
 

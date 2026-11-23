@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, fallback, http } from "viem";
 import { baseSepolia } from "viem/chains";
 
-import { RPC_URL, explorerTxUrl } from "@/lib/chain";
+import { FALLBACK_RPC_URL, RPC_URL, explorerTxUrl } from "@/lib/chain";
 import { formatUsdc } from "@/lib/money";
 import {
   encodeInvoiceLink,
@@ -21,7 +21,7 @@ import {
 /** Read-only public client for re-scanning the chain (dashboard checks). */
 const publicClient = createPublicClient({
   chain: baseSepolia,
-  transport: http(RPC_URL),
+  transport: fallback([http(RPC_URL), http(FALLBACK_RPC_URL)]),
 });
 
 /** Adapter: the viem public client shaped as the checker's small interface. */

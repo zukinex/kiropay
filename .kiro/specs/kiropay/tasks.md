@@ -94,5 +94,5 @@ referenced as `Req N` (see `requirements.md`).
        _Req 9_
 - [ ] 19. Record the demo video (< 3 min), write the Devpost description
        and the "How Kiro was used" write-up, and submit before the deadline
-       (Fri 5 Dec 2026, 14:00 PT / 05:00 WIB).
+       (Fri 4 Dec 2026, 14:00 PT = Sat 5 Dec 2026, 05:00 WIB).
        _Req 9_

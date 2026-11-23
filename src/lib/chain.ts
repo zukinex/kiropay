@@ -27,6 +27,17 @@ export const BASE_SEPOLIA_CHAIN_ID = 84532;
 /** Public Base Sepolia RPC endpoint. */
 export const RPC_URL = "https://sepolia.base.org";
 
+/**
+ * Fallback Base Sepolia RPC endpoint (PublicNode).
+ *
+ * sepolia.base.org rejects `eth_getLogs` ranges wider than 200 blocks, but
+ * the dashboard "Check payment" scan always requests 7,200+ blocks, so it
+ * can never succeed on the primary RPC alone. PublicNode allows 50,000-block
+ * ranges (verified live 2026-11-23). viem's `fallback` transport tries the
+ * primary first and switches here on error.
+ */
+export const FALLBACK_RPC_URL = "https://base-sepolia-rpc.publicnode.com";
+
 /** Block explorer base URL for Base Sepolia. */
 export const EXPLORER_URL = "https://sepolia.basescan.org";
 

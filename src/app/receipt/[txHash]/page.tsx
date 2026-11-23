@@ -3,12 +3,13 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { createPublicClient, http, isHash } from "viem";
+import { createPublicClient, fallback, http, isHash } from "viem";
 import { baseSepolia } from "viem/chains";
 
 import {
   explorerAddressUrl,
   explorerTxUrl,
+  FALLBACK_RPC_URL,
   RPC_URL,
 } from "@/lib/chain";
 import { formatUsdc } from "@/lib/money";
@@ -25,7 +26,7 @@ import {
 /** Read-only Base Sepolia client for the receipt's on-chain details. */
 const publicClient = createPublicClient({
   chain: baseSepolia,
-  transport: http(RPC_URL),
+  transport: fallback([http(RPC_URL), http(FALLBACK_RPC_URL)]),
 });
 
 type DecodeResult =
