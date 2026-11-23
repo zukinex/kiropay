@@ -114,7 +114,14 @@ export function PayPanel({ invoice }: { invoice: InvoiceLinkPayload }) {
       status: "unpaid",
       txHash: null,
     };
-    const result = findPaymentTransfer(receiptForVerify, invoiceForVerify);
+    // Pass the connected wallet as the expected sender: wallets that relay
+    // transactions submit from a relayer address, so `receipt.from` is not
+    // the payer — the Transfer event's `from` is.
+    const result = findPaymentTransfer(
+      receiptForVerify,
+      invoiceForVerify,
+      buyer,
+    );
     if (result.matched) {
       router.push(buildReceiptUrl(result.txHash, invoice));
     } else {
@@ -123,7 +130,7 @@ export function PayPanel({ invoice }: { invoice: InvoiceLinkPayload }) {
         `Payment could not be verified on-chain: ${result.reason} You can try again.`,
       );
     }
-  }, [receipt, phase, invoice, router]);
+  }, [receipt, phase, invoice, router, buyer]);
 
   // The receipt never arrived (RPC error / timeout) — plain language, and
   // the explorer link below lets the buyer check the hash manually.

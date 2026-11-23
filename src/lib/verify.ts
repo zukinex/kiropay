@@ -167,14 +167,36 @@ function decodeTransfer(log: PaymentLog): DecodedTransfer | null {
   }
 }
 
+/**
+ * Return the `from` address of a USDC `Transfer` log, or `null` when the log
+ * is not a USDC Transfer. The Transfer event's `from` is the real payer —
+ * for relayed transactions the receipt's `from` is the relayer, not the
+ * wallet that sent the USDC — so the receipt page uses this to show who
+ * actually paid.
+ */
+export function transferLogSender(log: PaymentLog): `0x${string}` | null {
+  if (log.address.toLowerCase() !== USDC_ADDRESS.toLowerCase()) return null;
+  const decoded = decodeTransfer(log);
+  return decoded === null ? null : decoded.from;
+}
+
 // --- Public API -------------------------------------------------------------
 
 /**
  * Verify a payment transaction receipt against an invoice.
  *
- * The buyer is `receipt.from`. Scans the receipt's logs for a USDC
- * `Transfer` event emitted by {@link USDC_ADDRESS} with `from` = buyer,
- * `to` = the invoice seller, and `value` = the exact invoice amount.
+ * The payer is `expectedSender` when given — the wallet that initiated the
+ * payment (the connected wallet on the pay page) — and `receipt.from`
+ * otherwise. Matching the Transfer's `from` against the known payer (not
+ * `receipt.from`) is what makes relayed payments verify: wallets that
+ * relay or batch transactions (MetaMask Smart Transactions, smart/AA
+ * wallets, EIP-7702) submit the tx from a relayer address, so
+ * `receipt.from` is the relayer while the Transfer event still carries the
+ * real payer in its `from`.
+ *
+ * Scans the receipt's logs for a USDC `Transfer` event emitted by
+ * {@link USDC_ADDRESS} with `from` = payer, `to` = the invoice seller,
+ * and `value` = the exact invoice amount.
  *
  * Returns `{ matched: true, ... }` with the matched transfer's details when
  * all three fields match. Returns `{ matched: false, reason }` otherwise,
@@ -187,9 +209,10 @@ function decodeTransfer(log: PaymentLog): DecodedTransfer | null {
 export function findPaymentTransfer(
   receipt: PaymentReceipt,
   invoice: Invoice,
+  expectedSender?: `0x${string}`,
 ): PaymentTransferResult {
   const expectedValue = BigInt(invoice.amount);
-  const buyer = receipt.from.toLowerCase();
+  const buyer = (expectedSender ?? receipt.from).toLowerCase();
   const seller = invoice.seller.toLowerCase();
 
   let foundUsdcTransfer = false;

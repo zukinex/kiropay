@@ -12,8 +12,8 @@
  *     payment, carrying the invoice payload so the receipt page can render
  *     without a wallet (Req 6).
  *
- * This module imports only from `./invoice` (a sibling). It never imports
- * from `src/app` or `src/components`.
+ * This module imports only from `./invoice` and `./verify` (siblings). It
+ * never imports from `src/app` or `src/components`.
  */
 
 import {
@@ -21,6 +21,7 @@ import {
   type Invoice,
   type InvoiceLinkPayload,
 } from "./invoice";
+import { transferLogSender, type PaymentLog } from "./verify";
 
 /**
  * Detect whether a `writeContract` error means the user rejected the
@@ -70,7 +71,10 @@ export function buildReceiptUrl(
 
 /** On-chain details shown on the receipt (Req 6): buyer, block, time. */
 export interface ReceiptChainDetails {
-  /** The address that sent the payment (`receipt.from`). */
+  /**
+   * The address that sent the payment — the USDC Transfer sender, falling
+   * back to `receipt.from` when the receipt carries no USDC Transfer log.
+   */
   buyer: `0x${string}`;
   /** The block the payment transaction was included in. */
   blockNumber: bigint;
@@ -88,6 +92,11 @@ export interface ReceiptChainClient {
     from: `0x${string}`;
     blockNumber: bigint;
     status: string;
+    /**
+     * Receipt logs. Optional so older mocks (and minimal clients) keep
+     * working — when absent, the buyer falls back to `from`.
+     */
+    logs?: PaymentLog[];
   }>;
   getBlock(args: { blockNumber: bigint }): Promise<{ timestamp: bigint }>;
 }
@@ -108,8 +117,21 @@ export async function fetchReceiptChainDetails(
     throw new Error("The transaction was reverted on-chain.");
   }
   const block = await client.getBlock({ blockNumber: receipt.blockNumber });
+  // The payer is the sender of the USDC Transfer in the receipt. Wallets
+  // that relay transactions (MetaMask Smart Transactions, smart/AA wallets)
+  // submit from a relayer address, so `receipt.from` is the relayer — the
+  // Transfer event still carries the real payer. Fall back to
+  // `receipt.from` when the receipt carries no USDC Transfer log.
+  let buyer = receipt.from;
+  for (const log of receipt.logs ?? []) {
+    const sender = transferLogSender(log);
+    if (sender !== null) {
+      buyer = sender;
+      break;
+    }
+  }
   return {
-    buyer: receipt.from,
+    buyer,
     blockNumber: receipt.blockNumber,
     timestamp: block.timestamp,
   };

@@ -18,6 +18,8 @@ const SELLER = "0x1234567890123456789012345678901234567890" as `0x${string}`;
 const BUYER = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd" as `0x${string}`;
 // A second buyer used to assert "first match wins".
 const BUYER_2 = ("0x" + "deadbeef".repeat(5)) as `0x${string}`;
+// A relayer address: the `from` of a receipt whose payment was relayed.
+const RELAYER = ("0x" + "77".repeat(20)) as `0x${string}`;
 // A non-USDC contract address, used to confirm wrong-address logs are ignored.
 const OTHER_ADDRESS = ("0x" + "11".repeat(20)) as `0x${string}`;
 
@@ -158,6 +160,39 @@ describe("findPaymentTransfer", () => {
     const result = findPaymentTransfer(
       receipt([transferLog({ from: BUYER_2 })]),
       invoice(),
+    );
+    expect(result.matched).toBe(false);
+  });
+
+  it("matches a relayed payment when expectedSender is the Transfer sender", () => {
+    // The wallet relayed the tx: receipt.from is the relayer, but the
+    // Transfer event still carries the real payer (the connected wallet).
+    const result = findPaymentTransfer(
+      receipt([transferLog()], { from: RELAYER }),
+      invoice(),
+      BUYER,
+    );
+    expect(result.matched).toBe(true);
+    if (result.matched === true) {
+      expect(result.from.toLowerCase()).toBe(BUYER);
+    }
+  });
+
+  it("returns matched:false for a relayed payment when expectedSender is omitted", () => {
+    // Without a known payer the verifier falls back to receipt.from, which
+    // is the relayer here — so the Transfer sender does not match.
+    const result = findPaymentTransfer(
+      receipt([transferLog()], { from: RELAYER }),
+      invoice(),
+    );
+    expect(result.matched).toBe(false);
+  });
+
+  it("returns matched:false when the Transfer sender is not the expectedSender", () => {
+    const result = findPaymentTransfer(
+      receipt([transferLog({ from: BUYER_2 })], { from: RELAYER }),
+      invoice(),
+      BUYER,
     );
     expect(result.matched).toBe(false);
   });

@@ -5,6 +5,8 @@ import {
   isUserRejection,
   type ReceiptChainClient,
 } from "../pay";
+import { USDC_ADDRESS } from "../chain";
+import type { PaymentLog } from "../verify";
 import {
   decodeInvoiceLink,
   type InvoiceLinkPayload,
@@ -117,6 +119,39 @@ describe("fetchReceiptChainDetails", () => {
     expect(details.buyer).toBe(BUYER);
     expect(details.blockNumber).toBe(12345678n);
     expect(details.timestamp).toBe(1795192800n);
+  });
+
+  it("returns the Transfer sender as buyer for a relayed transaction", async () => {
+    // The wallet relayed the tx (receipt.from is the relayer), but the
+    // USDC Transfer in the receipt still carries the real payer.
+    const RELAYER =
+      "0x7777777777777777777777777777777777777777" as `0x${string}`;
+    const PAYER =
+      "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" as `0x${string}`;
+    const TRANSFER_TOPIC =
+      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" as `0x${string}`;
+    const addrTopic = (addr: `0x${string}`): `0x${string}` =>
+      ("0x" + "0".repeat(24) + addr.slice(2).toLowerCase()) as `0x${string}`;
+    const transferLog: PaymentLog = {
+      address: USDC_ADDRESS,
+      topics: [TRANSFER_TOPIC, addrTopic(PAYER), addrTopic(VALID_SELLER)],
+      data: ("0x" +
+        (1500000n).toString(16).padStart(64, "0")) as `0x${string}`,
+      transactionHash: TX_HASH,
+      blockNumber: 12345678n,
+    };
+    const client = makeClient({
+      getTransactionReceipt: async () => ({
+        from: RELAYER,
+        blockNumber: 12345678n,
+        status: "success",
+        logs: [transferLog],
+      }),
+    });
+    const details = await fetchReceiptChainDetails(client, TX_HASH);
+    // viem decodes address topics as checksummed (mixed-case); compare
+    // case-insensitively, as the rest of the codebase does.
+    expect(details.buyer.toLowerCase()).toBe(PAYER);
   });
 
   it("asks for the receipt of the given tx hash and the block of that receipt", async () => {
